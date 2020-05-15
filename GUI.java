@@ -1,6 +1,5 @@
 import java.awt.BorderLayout;
 import javax.swing.*;
-import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -19,14 +18,15 @@ public class GUI extends JFrame implements ActionListener {
         JPanel northBar = new JPanel();
         JButton add = new JButton("add");
         JButton remove = new JButton("remove");
-        status = new JLabel("Status: Starting...");
         add(northBar, BorderLayout.NORTH);
         northBar.add(add);
         northBar.add(remove);
-        northBar.add(status);
-
-
         
+        //set up South bar
+        JPanel southBar = new JPanel();
+        status = new JLabel("Status: Starting...");
+        add(southBar, BorderLayout.SOUTH);
+        southBar.add(status);
 
         //set up class list
         JPanel classList = new JPanel();
