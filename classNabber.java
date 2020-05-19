@@ -14,13 +14,21 @@ public class classNabber
 {
     private static List<String> userClasses;
     private static WebDriver page;
+    private static GUI frame;
+    private static int classesInCart;
 
     public static void main(String[] args)
     {
+    	//user controlled variables
     	int term = 1;
     	
+    	
+    	//site variables
+    	classesInCart = 20;			//set to a large number, but in checkAvailability function
+    	
+    	
     	//set up GUI frame
-        GUI frame = new GUI();
+        frame = new GUI();
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frame.setSize( 800, 600 );
         frame.setVisible( true );
@@ -43,17 +51,22 @@ public class classNabber
         
         
         //opens up the driver and goes to home page
+        System.setProperty("webdriver.gecko.driver", "C:\\Users\\lizja\\Desktop\\geckodriver.exe");
         page = new FirefoxDriver();
         page.get("https://my.fsu.edu");
         
         navigateToCart(term);
         
-        
+        if(checkAvailability()) {
+        	enrollInClass();
+        }
 
         return;
     }
     
     private static void navigateToCart(int term) {
+    	frame.setStatus("navigating to page");
+    	
     	//inputs username and password
         page.findElement(By.id("username")).sendKeys("");
         page.findElement(By.id("password")).sendKeys("");
@@ -79,7 +92,28 @@ public class classNabber
         return;
     }
     
+    
+    private static String preXPath = "/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[8]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[3]/td[3]/div[1]/table[1]/tbody[1]/tr[2]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[";
+    private static String postXPath = "]/td[7]/div[1]/div[1]/img[1]";
+	
     private static Boolean checkAvailability() {
     	
+    	
+    	//numbering on the site begins at 2
+    	for(int i = 0; i < classesInCart; i++) {
+    		
+    		//checks if the class is open
+    		if(page.findElement(By.id(preXPath + i + postXPath)).getAttribute("alt").contentEquals("Open")) {
+    			return true;
+    		}
+    	}
+    	
+    	return false;
+    }
+    
+    private static Boolean enrollInClass() {
+    	
+    	
+    	return false;
     }
 }
