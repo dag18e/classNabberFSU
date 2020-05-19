@@ -1,14 +1,25 @@
 import java.io.File;
 import java.io.IOException;
+
 import javax.swing.JFrame;
 import java.util.List;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+//import org.openqa.selenium.WebElement;
+//import org.openqa.selenium.support.ui.WebDriverWait;
+//import java.time.Duration;
 
 public class classNabber
 {
     private static List<String> userClasses;
+    private static WebDriver page;
 
     public static void main(String[] args)
     {
+    	int term = 1;
+    	
+    	//set up GUI frame
         GUI frame = new GUI();
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
         frame.setSize( 800, 600 );
@@ -29,11 +40,46 @@ public class classNabber
         catch (IOException e) {
             e.printStackTrace();
         }
+        
+        
+        //opens up the driver and goes to home page
+        page = new FirefoxDriver();
+        page.get("https://my.fsu.edu");
+        
+        navigateToCart(term);
+        
+        
 
-
-        //do stuff
-
-
-
+        return;
+    }
+    
+    private static void navigateToCart(int term) {
+    	//inputs username and password
+        page.findElement(By.id("username")).sendKeys("");
+        page.findElement(By.id("password")).sendKeys("");
+        
+        //clicks through to term selection
+        page.findElement(By.id("fsu-login-button")).click();
+        page.get("https://cas.fsu.edu/cas/login?service=https%3A%2F%2Fcampus.omni.fsu.edu%2Fpsc%2Fsprdcs%2FEMPLOYEE%2FSA%2Fc%2FNUI_FRAMEWORK.PT_AGSTARTPAGE_NUI.GBL%3FCONTEXTIDPARAMS%3DTEMPLATE_ID%3APTPPNAVCOL%26scname%3DADMN_FSU_SR_ST_MY_CLASSES_CL_N%26PanelCollapsible%3DY%26PTPPB_GROUPLET_ID%3DFSU_SR_ST_MY_CLASSES_CL_TL%26CRefName%3DADMN_NAVCOLL_25%26ICAJAXTrf%3Dtrue%26ptgpid%3DADMN_S201807141525557333111812");
+        page.get("https://campus.omni.fsu.edu/psc/sprdcs/EMPLOYEE/SA/c/SA_LEARNER_SERVICES.SSR_SSENRL_CART.GBL?Page=SSR_SSENRL_CART&Action=A&ACAD_CAREER=UGRD&EMPLID=200532646&INSTITUTION=FSU01&STRM=2191");
+        
+        //term selection
+        if(term == 1) {
+        	page.findElement(By.xpath("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[2]/td[1]/div[1]/input[1]")).click();
+        }
+        else if(term == 2) {
+        	page.findElement(By.id("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[3]/td[1]/div[1]/input[1]")).click();
+        }
+        else {
+        	page.findElement(By.id("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[4]/td[1]/div[1]/input[1]")).click();
+        }
+        
+        page.findElement(By.id("DERIVED_SSS_SCT_SSR_PB_GO")).click();
+        
+        return;
+    }
+    
+    private static Boolean checkAvailability() {
+    	
     }
 }
