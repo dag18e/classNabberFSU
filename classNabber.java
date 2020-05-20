@@ -6,13 +6,12 @@ import java.util.List;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-//import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WebElement;
 //import org.openqa.selenium.support.ui.WebDriverWait;
 //import java.time.Duration;
 
 public class classNabber
 {
-    private static List<String> userClasses;
     private static WebDriver page;
     private static GUI frame;
     private static int classesInCart;
@@ -30,7 +29,7 @@ public class classNabber
     	//set up GUI frame
         frame = new GUI();
         frame.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
-        frame.setSize( 800, 600 );
+        frame.setSize( 300, 300 );
         frame.setVisible( true );
         frame.setResizable( false );
         
@@ -57,7 +56,7 @@ public class classNabber
         
         navigateToCart(term);
         
-        if(checkAvailability()) {
+        if(checkAvailability()) {        	
         	enrollInClass();
         }
 
@@ -81,10 +80,10 @@ public class classNabber
         	page.findElement(By.xpath("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[2]/td[1]/div[1]/input[1]")).click();
         }
         else if(term == 2) {
-        	page.findElement(By.id("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[3]/td[1]/div[1]/input[1]")).click();
+        	page.findElement(By.xpath("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[3]/td[1]/div[1]/input[1]")).click();
         }
         else {
-        	page.findElement(By.id("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[4]/td[1]/div[1]/input[1]")).click();
+        	page.findElement(By.xpath("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[4]/td[1]/div[1]/input[1]")).click();
         }
         
         page.findElement(By.id("DERIVED_SSS_SCT_SSR_PB_GO")).click();
@@ -93,17 +92,24 @@ public class classNabber
     }
     
     
+    
+    //TODO: Make this work for variable number of classes in cart.
+    
     private static String preXPath = "/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[8]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[3]/td[3]/div[1]/table[1]/tbody[1]/tr[2]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[";
     private static String postXPath = "]/td[7]/div[1]/div[1]/img[1]";
 	
     private static Boolean checkAvailability() {
     	
+    	String cssSelect = "win0divDERIVED_REGFRM1_SSR_STATUS_LONG$";
     	
-    	//numbering on the site begins at 2
-    	for(int i = 0; i < classesInCart; i++) {
+    	classesInCart = 8;
+    	for(int i = 2; i < classesInCart; i++) {
     		
-    		//checks if the class is open
-    		if(page.findElement(By.id(preXPath + i + postXPath)).getAttribute("alt").contentEquals("Open")) {
+    		WebElement statusDot = page.findElement(By.xpath("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[8]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[3]/td[3]/div[1]/table[1]/tbody[1]/tr[2]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[" + (i+2) + "]/td[7]/div[1]/div[1]/img[1]"));//.getAttribute("alt");//.equals("Open");
+    		String dotText = statusDot.getAttribute("alt");
+    		
+//    		checks if the class is open
+    		if(dotText.equals("Open")) {    			
     			return true;
     		}
     	}
@@ -112,6 +118,8 @@ public class classNabber
     }
     
     private static Boolean enrollInClass() {
+    	page.findElement(By.name("DERIVED_REGFRM1_LINK_ADD_ENRL$82$")).click();//xpath("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[10]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[2]/td[2]/div[1]/a[1]/span[1]/input[1]")).click();
+    	page.findElement(By.cssSelector("#DERIVED_REGFRM1_SSR_PB_SUBMIT")).click();
     	
     	
     	return false;
