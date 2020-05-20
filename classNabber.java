@@ -64,7 +64,7 @@ public class classNabber
     }
     
     private static void navigateToCart(int term) {
-    	frame.setStatus("navigating to page");
+    	frame.setStatus("Navigating to page");
     	
     	//inputs username and password
         page.findElement(By.id("username")).sendKeys("");
@@ -91,31 +91,16 @@ public class classNabber
         return;
     }
     
-    
-    
-    //TODO: Make this work for variable number of classes in cart.
-    
-    private static String preXPath = "/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[8]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[3]/td[3]/div[1]/table[1]/tbody[1]/tr[2]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[";
-    private static String postXPath = "]/td[7]/div[1]/div[1]/img[1]";
-	
     private static Boolean checkAvailability() {
     	
-    	String cssSelect = "win0divDERIVED_REGFRM1_SSR_STATUS_LONG$";
-    	
-    	classesInCart = 8;
-    	for(int i = 2; i < classesInCart; i++) {
-    		
-    		WebElement statusDot = page.findElement(By.xpath("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[8]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[4]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[3]/td[3]/div[1]/table[1]/tbody[1]/tr[2]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[" + (i+2) + "]/td[7]/div[1]/div[1]/img[1]"));//.getAttribute("alt");//.equals("Open");
-    		String dotText = statusDot.getAttribute("alt");
-    		
-//    		checks if the class is open
-    		if(dotText.equals("Open")) {    			
-    			return true;
-    		}
-    	}
-    	
-    	return false;
+    	//searches for the green status image in the page
+		if(page.findElements(By.xpath("//img[contains(@src,'PS_CS_STATUS_OPEN_ICN_1.gif')]")).size() > 1) {
+			return true;
+		}
+		else
+			return false;
     }
+    
     
     private static Boolean enrollInClass() {
     	page.findElement(By.name("DERIVED_REGFRM1_LINK_ADD_ENRL$82$")).click();//xpath("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[10]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[2]/td[2]/div[1]/a[1]/span[1]/input[1]")).click();
