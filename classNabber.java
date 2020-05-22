@@ -3,7 +3,12 @@ import java.io.IOException;
 
 import javax.swing.JFrame;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.support.ui.ExpectedCondition;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -56,15 +61,29 @@ public class classNabber
         
         navigateToCart(term);
         
-        if(checkAvailability()) {        	
-        	enrollInClass();
+        if(checkAvailability()) {   
+        	
+        	frame.setStatus("Class Available!");
+        	
+        	if(enrollInClass()) {
+        		frame.setStatus("Successfully enrolled!");
+        	}
+        	else {
+        		frame.setStatus("Enrollment unsuccessful");
+        	}
+        	
+        	//clicks "Add Another Class"
+        	waitAndClick("DERIVED_REGFRM1_SSR_LINK_STARTOVER");
+        }
+        else {
+        	frame.setStatus("All classes are full... retrying in 5 minutes");
         }
 
         return;
     }
     
     private static void navigateToCart(int term) {
-    	frame.setStatus("Navigating to page");
+    	frame.setStatus("Navigating to your cart");
     	
     	//inputs username and password
         page.findElement(By.id("username")).sendKeys("");
@@ -92,7 +111,6 @@ public class classNabber
     }
     
     private static Boolean checkAvailability() {
-    	
     	//searches for the green status image in the page
 		if(page.findElements(By.xpath("//img[contains(@src,'PS_CS_STATUS_OPEN_ICN_1.gif')]")).size() > 1) {
 			return true;
@@ -102,11 +120,25 @@ public class classNabber
     }
     
     
-    private static Boolean enrollInClass() {
-    	page.findElement(By.name("DERIVED_REGFRM1_LINK_ADD_ENRL$82$")).click();//xpath("/html[1]/body[1]/form[1]/div[5]/table[1]/tbody[1]/tr[1]/td[1]/div[1]/table[1]/tbody[1]/tr[10]/td[2]/div[1]/table[1]/tbody[1]/tr[1]/td[1]/table[1]/tbody[1]/tr[2]/td[2]/div[1]/a[1]/span[1]/input[1]")).click();
-    	page.findElement(By.cssSelector("#DERIVED_REGFRM1_SSR_PB_SUBMIT")).click();
+    private static Boolean enrollInClass() {    	
+    	//click proceed
+    	waitAndClick("DERIVED_REGFRM1_LINK_ADD_ENRL$82$");
     	
+    	//click finish enrolling
+    	waitAndClick("DERIVED_REGFRM1_SSR_PB_SUBMIT");
+    	
+    	
+    	if(page.findElements(By.xpath("//img[contains(@src,'PS_CS_STATUS_ERROR_ICN_1.gif')]")).size() > 1) {
+    		return true;
+    	}
     	
     	return false;
+    }
+    
+    private static void waitAndClick(String elementName) {
+    	WebDriverWait wait = new WebDriverWait(page, 5);
+    	wait.until(ExpectedConditions.elementToBeClickable(By.name(elementName)));
+    
+    	page.findElement(By.name(elementName)).click();
     }
 }
