@@ -19,16 +19,16 @@ public class classNabber
 {
     private static WebDriver page;
     private static GUI frame;
-    private static int classesInCart;
+    
+    private static String username;
+    private static String password;
 
     public static void main(String[] args)
     {
     	//user controlled variables
-    	int term = 1;
-    	
-    	
-    	//site variables
-    	classesInCart = 20;			//set to a large number, but in checkAvailability function
+    	int term = 2;
+    	username = "";
+    	password = "";
     	
     	
     	//set up GUI frame
@@ -37,22 +37,6 @@ public class classNabber
         frame.setSize( 300, 300 );
         frame.setVisible( true );
         frame.setResizable( false );
-        
-        //attempt to open save file, otherwise create one
-        try {
-            File save = new File("save.txt");
-
-            if(save.createNewFile()) {
-                frame.setStatus("Save file created in current directory");
-            }
-            else {
-                frame.setStatus("Loading save file");
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-        
         
         //opens up the driver and goes to home page
         System.setProperty("webdriver.gecko.driver", "C:\\Users\\lizja\\Desktop\\geckodriver.exe");
@@ -76,7 +60,7 @@ public class classNabber
         	waitAndClick("DERIVED_REGFRM1_SSR_LINK_STARTOVER");
         }
         else {
-        	frame.setStatus("All classes are full... retrying in 5 minutes");
+        	frame.setStatus("All classes are full... retrying soon");
         }
 
         return;
@@ -86,8 +70,8 @@ public class classNabber
     	frame.setStatus("Navigating to your cart");
     	
     	//inputs username and password
-        page.findElement(By.id("username")).sendKeys("");
-        page.findElement(By.id("password")).sendKeys("");
+        page.findElement(By.id("username")).sendKeys(username);
+        page.findElement(By.id("password")).sendKeys(password);
         
         //clicks through to term selection
         page.findElement(By.id("fsu-login-button")).click();
@@ -111,8 +95,13 @@ public class classNabber
     }
     
     private static Boolean checkAvailability() {
+    	
+    	String statusDot = "//img[contains(@src,'PS_CS_STATUS_OPEN_ICN_1.gif')]";
+    	
+    	waitByXpath(statusDot);
+    	
     	//searches for the green status image in the page
-		if(page.findElements(By.xpath("//img[contains(@src,'PS_CS_STATUS_OPEN_ICN_1.gif')]")).size() > 1) {
+		if(page.findElements(By.xpath(statusDot)).size() > 1) {
 			return true;
 		}
 		else
@@ -128,7 +117,7 @@ public class classNabber
     	waitAndClick("DERIVED_REGFRM1_SSR_PB_SUBMIT");
     	
     	
-    	if(page.findElements(By.xpath("//img[contains(@src,'PS_CS_STATUS_ERROR_ICN_1.gif')]")).size() > 1) {
+    	if(page.findElements(By.xpath("//img[contains(@src,'PS_CS_STATUS_SUCCESS_ICN_1.gif')]")).size() > 1) {
     		return true;
     	}
     	
@@ -136,9 +125,14 @@ public class classNabber
     }
     
     private static void waitAndClick(String elementName) {
-    	WebDriverWait wait = new WebDriverWait(page, 5);
+    	WebDriverWait wait = new WebDriverWait(page, 10);
     	wait.until(ExpectedConditions.elementToBeClickable(By.name(elementName)));
     
     	page.findElement(By.name(elementName)).click();
+    }
+    
+    private static void waitByXpath(String elementXpath) {
+    	WebDriverWait wait = new WebDriverWait(page, 10);
+    	wait.until(ExpectedConditions.presenceOfElementLocated(By.xpath(elementXpath)));
     }
 }
