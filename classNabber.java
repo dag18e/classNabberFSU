@@ -27,6 +27,7 @@ public class classNabber
     {
     	//user controlled variables
     	int term = 2;
+    	int delayInSeconds = 10;
     	username = "";
     	password = "";
     	
@@ -45,22 +46,33 @@ public class classNabber
         
         navigateToCart(term);
         
-        if(checkAvailability()) {   
-        	
-        	frame.setStatus("Class Available!");
-        	
-        	if(enrollInClass()) {
-        		frame.setStatus("Successfully enrolled!");
-        	}
-        	else {
-        		frame.setStatus("Enrollment unsuccessful");
-        	}
-        	
-        	//clicks "Add Another Class"
-        	waitAndClick("DERIVED_REGFRM1_SSR_LINK_STARTOVER");
-        }
-        else {
-        	frame.setStatus("All classes are full... retrying soon");
+        
+        while(true) {
+	        if(checkAvailability()) {   
+	        	
+	        	frame.setStatus("Class Available!");
+	        	
+	        	if(enrollInClass()) {
+	        		frame.setStatus("Successfully enrolled!");
+	        	}
+	        	else {
+	        		frame.setStatus("Enrollment unsuccessful");
+	        	}
+	        	
+	        	//clicks "Add Another Class"
+	        	waitAndClick("DERIVED_REGFRM1_SSR_LINK_STARTOVER");
+	        }
+	        else {
+	        	frame.setStatus("All classes are full... retrying soon");
+	        }
+	        
+	        
+	        //time between refreshing cart
+	        try {
+	            Thread.sleep(delayInSeconds*1000);
+	        } catch (InterruptedException e) {
+	            e.printStackTrace();
+	        }
         }
 
         return;
